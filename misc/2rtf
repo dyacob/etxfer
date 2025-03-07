@@ -1,0 +1,204 @@
+int
+fout_rtf (fp, statsFlags, lethFlags)
+  FILE* fp;
+  STATSFlags* statsFlags;
+  LEthFlags* lethFlags;
+{
+#define ROMAN "Times New Roman"
+#define FONTSIZE  "\\fs20 "        /* hackers can change this, 20 = 10, RTF seems to use a "divide by 2" system.. */
+                                   /* DO NOT DELETE SPACE, " ", AT THE END!! */
+
+int i, j, test = true;
+FCHAR *uniString, mapAddr;
+ECHAR* myCharmap;
+unsigned char *coco, rtfAddress;
+char* FidelFonts[] = {            /* at the moment I don't want to relate these to the enum-ed values */
+        " AGF - Zemen",
+        " ALXethiopian",
+        "\\fcharset2 Geezigna",
+        "\\fcharset2 Washra  Primary",
+        "\\fcharset2 Washrax Secondary",
+        " Ge'ezFree Zemen Primary",
+        " Ge'ezFree Zemen Secondary"
+};
+char defRoman[80], defFidel[80], defFidel2[80], printString[80];
+enum Fonts {Fagafari, Falxet, Ffeedel, Fgezfree1, Fgezfree2, Froman, Fwashra, Fwashrax} fidelFont, lastFont;
+
+
+
+  /*
+   *  Write Obligatory RTF Header      maybe we need \f instead of \r ?
+   *  This is based on saving sample text with the Win '95 Word Pad.
+   *  Any of this changes later. The fidel font is now fixed as "f4".
+   */
+  fprintf (stdout, "{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fnil MS Sans Serif;}{\\f1\\fnil\\fcharset2 Symbol;}{\\f2\\fswiss\\fprq2 System;}{\\f3\\fnil %s;}", ROMAN );
+
+  switch (lethFlags->out)  /* do some font/coding specific tasks here */
+    {
+      case agafari :
+        myCharmap = AgafariFidel;
+		fidelFont = Fagafari;
+        fprintf ( stdout, "{\\f4\\fnil\\fprq2%s;}}\r\n", FidelFonts[0] );
+        break;
+
+      case alxet :
+        myCharmap = ALXEtFidel;
+		fidelFont = Falxet;
+        fprintf ( stdout, "{\\f4\\fnil\\fprq2%s;}}\r\n", FidelFonts[1] );
+        break;
+
+      case feedel :
+        myCharmap = FeedelFidel;
+		fidelFont = Ffeedel;
+        fprintf ( stdout, "{\\f4\\fnil\\fprq2%s;}}\r\n", FidelFonts[2] );
+        break;
+
+      case washra :
+/*      myCharmap = WashraFidel; */
+		fidelFont = Fwashra;
+        fprintf ( stdout, "{\\f4\\fnil\\fprq2%s;}", FidelFonts[3] );
+        fprintf ( stdout, "{\\f5\\fnil\\fprq2%s;}}\r\n", FidelFonts[4] );
+        break;
+
+      case gezfree1 :
+		fidelFont = Fgezfree1;
+        fprintf ( stdout, "{\\f4\\fnil\\fprq2%s;}", FidelFonts[5] );
+        fprintf ( stdout, "{\\f5\\fnil\\fprq2%s;}}\r\n", FidelFonts[6] );
+        break;
+
+      default:
+        break;
+    }
+
+  fprintf ( stdout, "{\\colortbl\\red0\\green0\\blue0;}\r\n" );
+  fprintf ( stdout, "\\deflang1033\\pard" );
+
+
+  /*
+   *  Set up these recurring RTF strings, essentially they now work like
+   *  sera language switches.
+   */
+
+  strcpy ( defRoman, "\\plain\\f3" );
+  strcat ( defRoman, FONTSIZE );
+  strcpy ( defFidel, "\\plain\\f4" );
+  strcat ( defFidel, FONTSIZE );
+  if ( lethFlags->out == washra || lethFlags->out == gezfree1 )
+    {
+      strcpy ( defFidel2, "\\plain\\f5" );  
+      strcat ( defFidel2, FONTSIZE );  
+    }
+
+  /*
+   *  Assume text starts in Ge'ez...
+   */
+  lastFont = fidelFont;
+  fprintf ( stdout, defFidel );
+
+
+  /* 
+   *   Let's Read And Write!! 
+   */
+
+  while (!feof(fp) && test)
+   {
+     test = fidel_fgets ( &uniString, WSIZE, fp, lethFlags );
+     i = 0;
+     while ( uniString[i] )
+	   /*
+	    *  We do this one char at a time to handle multiple ethiopic fonts simply...
+		*/
+       {
+	     printString[0] = '\0';
+         fidel_sputc ( uniString[i], &coco, lethFlags );
+
+         j = 0;
+         while ( coco[j] )
+           {
+             rtfAddress = coco[j];
+             if ( isethio (uniString[i]) )
+               {
+			     mapAddr =  uniString[i];
+			     mapAddr =  (isprivate(mapAddr))  
+                         ?  (UNITOTAL-1)  + (mapAddr - PRIVATE_USE_END)
+                         :  (mapAddr - UNIFIDEL)
+                         ;
+                 if (lethFlags->out == washra)
+                   {
+                     if ( WashraFidel[mapAddr].id == SET1 )
+                       fidelFont = Fwashrax;
+                     else
+                       fidelFont = Fwashra;
+                   }
+                 if (lethFlags->out == gezfree1)
+                   {
+                     if ( GeezFreeFidel[mapAddr].id == SET1 )
+                       fidelFont = Fgezfree2;
+                     else
+                       fidelFont = Fgezfree1;
+                   }
+                 if (lastFont != fidelFont)
+                   {
+                     if ( fidelFont == Fwashrax || fidelFont == Fgezfree2 )
+                       strcat ( printString, defFidel2 );
+                     else
+                       strcat ( printString, defFidel );
+                   }
+                 strcat ( printString, RTFMAP[rtfAddress] );
+                 lastFont = fidelFont;
+               }
+             else if ( coco[j] > ' ' )
+               {
+                 if (lastFont != Froman)
+                   strcat ( printString, defRoman );
+                 strcat ( printString, RTFMAP[rtfAddress] );
+                 lastFont = Froman;
+               }
+             else  /* ASCII control char <= ' ' */
+               {
+/*               if ( coco[j] == '\n' )             /* this does DOS->UNIX */
+/*                 sprintf ( printString, "%s\r\n\\par", defRoman );  
+                   strcat ( printString, "\\\n" );  // returns must be in roman -? //
+                 else
+                   strcat ( printString, RTFMAP[rtfAddress] ); */
+/*               lastFont = Froman; */
+               }
+
+             j++;
+		   }  /* end while (coco[j]) */
+         free ((unsigned char *)coco);
+         fprintf ( stdout, "%s", printString );
+         i++;
+       }  /* end while (uniString[i]) */
+
+
+     if (statsFlags->yes)
+       {
+         i = 0;
+         while ( uniString[i] )
+           {
+             if ( isethio (uniString[i]) )
+               if ( isprivate(uniString[i]) )
+                 Stats[(UNITOTAL-1) + (uniString[i] - PRIVATE_USE_END)].stat ++;
+               else
+                 Stats[uniString[i]-UNIFIDEL].stat ++;
+             i++;
+           }
+       }
+     free ((FCHAR *)uniString);
+   }  /* end while (!feof(inptr) && test) */
+
+  fprintf ( stdout, "\\par }\n" );  /* close this file and we're done! */
+
+  if (statsFlags->yes) 
+    print_stats ( statsFlags, lethFlags );
+
+/*-------Lets Be A Good Citizen-----------------*/
+
+  fclose (fp);
+  free ((LEthFlags *)lethFlags);
+  free ((STATSFlags *)statsFlags);
+  exit (0);
+}
+
+

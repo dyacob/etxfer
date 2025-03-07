@@ -1,0 +1,86 @@
+
+Things That Could Be Done
+-------------------------
+
+  The ChangeList could be incorporated in the fi struct
+   -check if there are any functions where ChangeList is passed and not fi
+
+  Fout variables could be promoted to a lethFlag element -this would become
+  useful very quickly!
+
+
+Do Soon
+-------
+  *  plain2rtf does NOT seem to switch fonts, fix!!!! (1 hour)
+     -it is not being passed the _last_ isGez.
+  *  output to sera does not use \ 
+  *  verify!  rtf2TeX and plain2TeX         (1 hour)
+  *  verify!  Statistics, RTF Statistics    (2 hours)
+  *  Fix Feedel (other?) -> Unicode problem around Hi & Ha and elsewhere
+
+  *  EOF bug (?)
+
+Do Later
+--------
+  revamp command line flags     (30 minutes)
+
+
+  Add Other EthiO Systems fonts (need names only)
+
+  Add ModEth Tables   (need to print and get addresses)
+  Add MonoType Tables (write monotype, see if they still sell these)
+
+  Add Alpas Tables            (need fonts)
+  Add NCI Tables
+  Add ED Tables
+  Add Brana Tables
+  Add VisualGeez Tables       (need fonts)
+  Add Phonetic Systems Tables (need fonts, write yemane rusom)
+
+  Add Dashen Tables   (wait for user request)
+
+  Test on LARGE rtf files from MS Word & Excell
+
+
+DONE
+----
+X  move sout_java and sout_tex into get_fchar.l (1 hour)
+X  do SERA as input hence merge the codes...
+X  SERA/Other Text Output        (need "rtf_stripout" routine 2-4 hours)
+X  replace libeth booleans rtf & html with a "mime" variable
+X  which recognizes "html", "rtf", and "text", expand this later to
+X  include the IOput variable with a full mime "Content Type" and
+X  "Charset"
+
+X  \ and EOL seems to be eaten these days, fix...
+X  why isn't RTFMAP being used?
+
+X Restructure code
+X Add Command line options and SERA Flags
+X Catch { and }
+X Complete escape check list
+
+X reassemble code from bug work arounds
+X  o make read in arbitrary, that is NOT specified at the command line
+X    all known ethiopic fonts will be replaced with the target.
+
+X Update SERA Lexer
+X   Remove latin escapes
+X   "e3" -> ea
+X   \~lang~lang
+X   create seraflags if sent as null
+X   add gezfree
+
+
+Test Types
+----------
+X Single System => Singe  (feedel -> Alxet)
+X Multi System => Single  (washra -> Feedel)
+
+X Single System => Multi  (feedel -> Washra)
+X o Try when a Washrax \f# proceeds Washra in the body of the text, 
+X   make sure the isGez var updates properly.
+
+X Multi System => Multi  (Gezfree -> Washra)
+X                        (Washrasl -> Washra)
+

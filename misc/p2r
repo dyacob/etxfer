@@ -1,0 +1,79 @@
+void
+plain2rtf ( Fout, fi, changeList, rtfText, inFile, outFile, isGez, lethFlags, sectionID )
+  enum Fonts Fout;
+  struct FontInfoList* fi;
+  struct FontInfo* (*changeList)[];
+  char* rtfText;
+  FILE* inFile;
+  FILE* outFile;
+  struct FontInfo** isGez;
+  LEthFlags* lethFlags;
+  int sectionID;
+{
+struct FontInfo* newGez; 
+FCHAR* uniString=NULL;
+unsigned char* rtfOut=NULL;
+char *outString=NULL, *lastString=NULL, *setNull=NULL, *nullTest=NULL, fontCh=4;
+char *Begin=NULL, *End=NULL, *lineSegment=NULL, *appendRTF=NULL, *header=NULL, *markBegin=NULL;
+int test=true, fontNum=4, i;
+
+#define ROMAN "Times New Roman"
+
+//  _debugf ( ("In plain2plain [%i]! \n", sectionID) );
+
+  if (sectionID == HEADER)       /* make header */
+    {
+      fprintf ( outFile, "{\\rtf1\\ansi\\deff0\\deftab720{\\fonttbl{\\f0\\fnil MS Sans Serif;}{\\f1\\fnil\\fcharset2 Symbol;}{\\f2\\fswiss\\fprq2 System;}{\\f3\\fnil %s;}", ROMAN );
+      for ( i=0; i < fi->font[Fout]->numSets; i++ )
+        {
+          strcat ( fi->font[Fout+i]->rtfId, &fontCh );
+          fontCh++;
+          if (fi->font[Fout+i]->rtfPrefix == NULL) 
+            fprintf ( outFile, "{%s\\fnil\\frq2 %s;}}\r\n",
+                      fi->font[Fout+i]->rtfId, fi->font[Fout+i]->setName );
+          else
+            fprintf ( outFile, "{%s\\fnil\\frq2%s%s;}}\r\n",
+                      fi->font[Fout+i]->rtfId, fi->font[Fout+i]->rtfPrefix, fi->font[Fout+i]->setName );
+        }
+      fprintf ( outFile, "{\\colortbl\\red0\\green0\\blue0;}\r\n" );
+      fprintf ( outFile, "\\deflang1033\\pard" );
+      return;
+    }
+  else if (sectionID == PLAINLINE)
+    {
+      while (!feof(inFile) && test)
+       {
+         test = fidel_fgets ( &uniString, WSIZE, inFile, lethFlags );
+         i = 0;
+         fidel_sputs ( uniString, &rtfOut, lethFlags );
+
+         if ( ( nullTest = (char *)strstr ( rtfOut, "{\\fetas2" ) ) != NULL )
+           replace_rtfFlags (&rtfOut, "\0", "\0", Fout, *isGez, fi);
+
+         fprintf ( outFile, "%s", rtfOut );
+
+/*       if (statsFlags->yes)
+           {
+             i = 0;
+             while ( uniString[i] )
+               {
+                 if ( isethio (uniString[i]) )
+                   if ( isprivate(uniString[i]) )
+                     Stats[(UNITOTAL-1) + (uniString[i] - PRIVATE_USE_END)].stat ++;
+                   else
+                     Stats[uniString[i]-UNIFIDEL].stat ++;
+                 i++;
+               }
+           } 
+*/       free ((FCHAR *)uniString); 
+         free ((unsigned char *)rtfOut); 
+       }
+
+    }
+
+
+  fprintf ( stdout, "\\par }\n" );  /* close this file and we're done! */
+
+  return;
+
+}

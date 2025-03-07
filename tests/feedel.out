@@ -1,0 +1,63 @@
+The font MS Sans Serif will be treated as Latin.
+The font Symbol will be treated as Latin.
+The font System will be treated as Latin.
+The font Times New Roman will be treated as Latin.
+The font ALXethiopian will be converted!
+{\rtf1\ansi\deff0\deftab720{\fonttbl{\f0\fnil MS Sans Serif;}{\f1\fnil\fcharset2 Symbol;}{\f2\fswiss\fprq2 System;}{\f3\fnil Times New Roman;}{\f4\fnil\fprq2\fcharset2 Geezigna;}}
+{\colortbl\red0\green0\blue0;}
+\deflang1033\pard\plain\f4\fs20 
+y    y.    ´ù    ´    ÿ    Y    ç
+s    s.    s>    §    s?    S    sÖ    §_
+a    a.    a>    ´    ÿ    A    ç    Œ_
+e    e.    «>    «    «?    E    ä    «_
+c    c.    >        ?    C    ‚    _
+i    K    k    †    ž    I    é    …
+h    h.    h>    ú    h?    H    î    ú_
+d    d.    d>    š    d?    D    ë    š_
+n    n³    nù    ~    nÀ    N    ö    ’
+n    n³    nù    ~    nÀ    N    ö    ’
+j    j.    j>    Æ    j?    J    ï    Æ_
+j™    j.    j>    Æ™    j?    J™    ï™    Æ_
+u    u³    uù    ¬    uÀ    U    è    Ÿ
+[    [³    [ù    Ò    [À    {    Ó    [_
+y    y.    ´ù    ¹    ÿ    P    ç    `
+l    l.    l>    Â    l?    L    ñ    Â_
+'    '.    'ù    ¾    'À    "    ®    ¾_
+r    r.    r>    r    r?    R    å    ‰
+m    m.    m>    µ    m?    M    ÷    ˆ
+z    z.    z>    ½    z?    Z    ó    ˆ
+w    ý    ·ù    ·    ·À    W    ã
+0    0.    ¼>    ¼    ¼?    )    â
+,    ,.    ,>    ²    ,?    <    ø    ²_
+q    q³    qù    Ï    qÀ    Q    Î    Ï_
+v    ‡    ‘    Ã    ü    V    ×    
+f    Ä.    Ä>    Ä    f?    F    ì    f_
+f    Ä.    Ä>    Ä    f?    F    ì    f_ 
+g    ©.    ©>    ©    g?    G    í    ©_
+o    o.    o>    ¿    o?    O    ¯    Ù
+o    o.    o>    ¿    o?    O    ¯    
+b    b.    b>    º    b?    B    õ    º_
+x    x.    x>    Å    ˜    X    ô    þ
+]    ].    ]>    Ô    ]?    }    Õ    Ô_
+\    \.    ©>    g    g?    |    È    ©_
+;    ;.    É>    É    É?    :    ò
+t    û    ð    Í    Ø    T    æ    Í_
+=    =³    =ù    ­    =À    +    ±    =_
+
+Á    ª    £    ¢    °    ¤    ¦    ¥    »    Ú
+Û    Ü    Ý    Þ    ß    à    ¡    á    ê    Ë
+
+     %    Ê   ÊÊ           @
+!        “    ”    @ 
+           
+
+    ’    
+    `    
+    ˆ    
+    ˆ    
+    Ù    
+    «_    
+    Æ_    
+    =_    
+    Í_    
+\par }

@@ -1,0 +1,63 @@
+Work Remaining To Reach 0.1
+===========================
+
+1) Add "RTF Strip Out" to save RTF files as text (sera, utf-x, tex, jis, etc)
+   [ 2 - 4 hours ]
+
+2) Eliminate input type requirement:   X
+   o  Rewrite "Rename" routine to convert any Ge'ez font it comes across to the
+      target.  [ 1 - 2 hours ]
+
+3) Rewrite "rtfOut" to update font identifiers properly for multifont outputs.
+   [ 6 - 8 hours ]
+
+4) Test on large RTF files from MS Word, WordPerfect, Excel.
+   [ ????? hours ]
+
+5) Hopefully add Alpas and ModEth support.
+   [ 3 - 5 hours ]
+
+6) Apply statistics output in RTF and HTML tables.   X (HTML)
+   [ 4 - 6 hours ]
+
+7) Go through code and beautify comments, make variable names consistant
+   throughout.  [ 2 hours ]
+
+
+gezXfer  0.1
+------------
+An application to convert character codes from one Ethiopic system into another.
+
+Purpose:  
+  To fascilitate the migration from pre-Unicode Ethiopic text systems
+  into Unicode.
+
+
+Will Read In
+------------
+Now:
+  Agafari, ALXEthiopian, Feedel, Washra [Ethiopian ASCII], SERA
+Later:
+  Phonetic Systems, Alpas, Modeth, MonoType, Visual Ge'ez, NCI, Dashen (UCS-7,8,16)
+
+Will Write Out
+--------------
+Now:
+  Agafari, ALXEthiopian, Feedel, Java, JIS, JUNET, SERA, TeX, UCS-8,16.
+Later:  
+  Phonetic Systems, Alpas, Modeth, MonoType, Visual Ge'ez, NCI, Dashen, UCS-7
+
+Systems are supported as vendor specific information becomes available.  Vendors
+are invited to contact Ge'ezXfer maintainers to accelerate development.
+
+
+Progression
+-----------
+1)  gezXfer 0.1 released as a command line tool on unix systems.
+2)  Java porting begins, LibEth is compiled under DOS.
+3)  gezXfer for DOS is released following successful porting of LibEth.
+4)  LibEth compiled as a DLL on DOS systems, VB interfacing begins.
+5)  16bit gezXfer released for Windows, font vendors may distribute it with
+    their products.
+
+*)  Additional font systems and bug fixes occur along the way.

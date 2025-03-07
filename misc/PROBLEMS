@@ -1,0 +1,6 @@
+1)  Washra and GezFree multi font outputs bomb (rtf2rtf, plain2rtf) -fix.
+2)  in rtf2plain switches into latin do not work well, look at big picture.
+
+check in reset_fontId  -the newly added "isGez =& Roman" might be a problem,
+maybe Roman should be in the ChangeList for rtf2plain ?
+

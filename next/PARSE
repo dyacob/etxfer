@@ -1,0 +1,114 @@
+Menasse,
+
+  I finally got the time to write this; I think I am pretty happy with it
+now.  It does a mean a lot of restructuring of me but it is for the best
+when considering the likelihood of expanding the resource.  It also addresses
+immediate needs I am confronting.
+
+  I am sure in this day-and-age there is tons of document processing theory,
+but I've never seen it.  The following I am just making up from my experience
+over the last few months.  It seems straight forward enough...
+
+  Read and LMKWYT.  I can get through the revisions on a single weekend, but
+now I am uncertain when that weekend comes.  That is what my next letter is
+about...
+
+this is formatted for 80 columns.
+
+================================================================================
+
+This is an attempt to describe how I would like to process a document language
+in a generic manner.  That is the large scale structure of the algorithms we
+develop would be the same for different document languages like HTML, SGML, RTF,
+TEX, and the like.  As well as between the languages we work in.
+
+Using a common approach will fascilitate the porting of our work as well
+as make the code simpler to read and ease debugging issues.  Fortunately our
+needs are simple.  At this time we are only concerned for the change of a font
+which can also indicate a change of script.  In the future we might also want
+to translate changes of attributes such as; bold, italic, and sizes.  The
+description of a text string processing approach here will also allow for this
+expansion in a simple manner.
+
+
+Of text based document languages I can think of, they all follow a common 
+structure in an arbitrary block of text:
+
+
+|<-------------------------------- String ------------------------------------>|
+ ______________________________________________________________________________
+[               |                    |                   |                     ]
+[    META A     |     TEXT A         |      META B       |      TEXT B         ]
+[_______________|____________________|___________________|_____________________]
+
+
+"META" referes to the description language of the langauge such as <hr size=2> 
+in HTML for example.  In every document language (cited above) a document will
+begin with some meta text describing the defaults of the document therein.  So
+the sequence META->TEXT->META is universal.  
+
+"TEXT" refers then to qualitative content.  We permit TEXT to also contain
+meta descriptions of text elements such as:  \`bf in RTF, &#137; in HTML, or
+\char97 in TeX.  
+
+
+The text processing routine I would like to propose would work as follows
+(using rtf as an example) :
+
+  :
+  :
+  pureText = rtfMetaText = rtfText = NULL;
+
+  rtfText  = java_or_C_read_text_from_stream( myStream );
+
+  while ( rtfText != NULL )
+    {
+      pureText = parse_rtfText ( rtfText, rtfMetaText );
+      process_rtfMeta ( rtfMetaText, fi );
+      :
+      output ( rtfMetaText, pureText );
+    }
+  :
+  :
+
+
+"rtfText" would be the "String" in the above figure, the rtfText is processed 
+in the while loop above until the end of the string.  Each successive cycle the
+rtfText string grows smaller as it is processed.  At the end of the first
+cycle the rtfText would be returned as:
+
+
+     |<----------- String ----------->|
+      ________________________________
+     [               |                |
+     [     META      |     TEXT B     |
+     [_______________|________________|
+
+
+"pureText" would then contain TEXT A, and "rtfMetaText" contains META A.  We
+have the option to convert the meta descriptions of text elements ( \`bf etc)
+within the "parse_rtfText" routine and return it to the pureText buffer.  Or
+the processing can be done externally.  I prefer internally because it is
+fairly simple to do.
+
+
+
+In the "process_rtfMeta" we send also the variable "fi" which is a font
+information structure that contains a list of known fonts, a list of fonts
+we are searching for, and will know the font associated with the "pureText" 
+(which will be updated as the "rtfMetaText" is itself processed).
+
+The "rtfMetaText" string will be updated by "process_rtfMeta" if required -using
+fi for instance to make font changes.  The tasks performed by "process_rtfMeta"
+upon the "rtfMetaText" can be expanded with time. following "process_rtfMeta" 
+may be other routines to convert to other document systems, hypothetically we
+might find:
+
+
+   htmlMetaText = rtf2html ( rtfMetaText, fi );
+
+
+The "output" routine is an arbitrary routine to send the processed text to
+an output stream.  The entire cycle repeats until the end of the input stream.
+
+================================================================================

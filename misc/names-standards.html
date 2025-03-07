@@ -1,0 +1,564 @@
+
+<BASE HREF="http://www.bidask.com/java/javaCodingStd.html">
+
+<HTML>
+<TITLE>
+Draft Java Coding Standard
+</TITLE>
+<BODY bgcolor=#ffffee vlink=#0000aa link=#cc0000>
+
+
+<H1> 
+Draft Java Coding Standard
+</H1>
+
+by <a href="http://g.oswego.edu/">Doug Lea</a>. Last revised May 29 1996.
+
+<p>
+Note: The form of these guidelines is based on examples in Watts
+Humphrey's book <em>A Discipline for Software Engineering</em>,
+Addison-Wesley, 1995.
+
+<h2>
+Packages and directories 
+</h3>
+
+Create a new java <CODE>package</CODE> for each self-contained project
+or group of related functionality.  Create and use directories in
+accord with java <CODE>package</CODE> conventions.  Consider writing
+an <code>index.html</code> file in each directory briefly outlining
+the purpose and structure of the package.
+
+<h2>
+Program Files
+</h3>
+
+
+Place each class in a separate file. This applies even to non-public 
+classes (which are allowed by the Java compiler to be placed
+in the same file as the main class using them) except in the
+case of one-shot usages where the non-public class cannot conceivably
+be used outside of its context.
+<P>
+For self-standing programs, the class with <CODE>main</CODE>
+should be separate from those containing normal classes.
+
+
+<h3>
+File Headers
+</h3>
+
+Begin each file with a comment including:
+<OL>
+  <LI> The file name
+      and/or related identifying information including, if 
+      applicable, copyright information.  
+  <LI> A history table listing dates, authors, 
+      and summaries of changes.
+  <LI> If the file contains more than one class, list the
+      classes, along with a very brief description of each.
+      
+  <LI> If the file introduces a principal entry point for a
+      <CODE>package</CODE>, briefly describe the rationale for
+      constructing the package.
+</OL>
+     <P>
+Example:
+<PRE>
+/*
+   File: Example.java
+   Date      Author      Changes
+   Sep 1  95 Doug Lea    Created  
+   Sep 13 95 Doug Lea    Added new doc conventions
+*/
+</PRE>
+
+
+<h2>
+Documentation
+</h2>     
+
+Write all <CODE>/** ... **/</CODE> comments using <EM>javadoc</EM>
+conventions.  (Even though not required by javadoc, end each
+<CODE>/**</CODE> comment with <CODE>**/</CODE> to make it easier to
+read and check.)
+
+<h3>
+Classes and Interfaces
+</h3>
+
+
+Preface each class with a <CODE>/** ... **/</CODE> comment describing
+the purpose of the class, guaranteed invariants, usage instructions,
+and/or usage examples.  Also include any reminders or disclaimers
+about required or desired improvements. Use HTML format, with added
+tags: <UL>
+  <LI> <CODE>@author</CODE>  <EM>author-name</EM>
+  <LI> <CODE>@version</CODE> <EM>version number of class</EM>
+  <LI> <CODE>@see</CODE>  <EM>string</EM>
+  <LI> <CODE>@see</CODE>  <EM>URL</EM>
+  <LI> <CODE>@see</CODE>  <EM>classname#methodname</EM>
+</UL>
+
+<P>
+Example:
+
+<PRE>
+/**
+ * A class representing a window on the screen.
+ * For example:
+ * &lt;pre&gt;
+ *  Window win = new Window(parent);
+ * win.show();
+ * &lt;/pre&gt;
+ *
+ * @see  awt.BaseWindow
+ * @see  awt.Button
+ * @version 1.2 31 Jan 1995
+ * @author  Bozo the Clown
+**/
+class Window extends BaseWindow {
+ ...
+}
+</PRE>
+
+
+<h3>
+Instance Variables
+</h3>
+
+
+Use <EM>javadoc</EM> conventions to describe nature, purpose,
+constraints, and usage. Use HTML format, with added tags:
+<UL>
+  <LI> <CODE>@see</CODE>  <EM>string</EM>
+  <LI> <CODE>@see</CODE>  <EM>URL</EM>
+  <LI> <CODE>@see</CODE>  <EM>classname#methodname</EM>
+</UL>
+
+<P>
+Example:
+
+<PRE>
+    /**
+     * The current number of elements.
+     * must be non-negative, and less than or equal to capacity.
+    **/
+    private int count_;
+</PRE>
+
+
+<h3>
+Methods
+</h3>
+
+Use <EM>javadoc</EM> conventions to describe nature, purpose,
+preconditions, effects, algorithmic notes, usage instructions, 
+reminders, etc. Use HTML format, with added tags:
+<UL>
+  <LI> <CODE>@param</CODE> <EM>paramName</EM> description. (Note: In 
+      alpha versions of Java, this is listed as <CODE>@arg</CODE>, 
+      not <CODE>@param</CODE>.)
+  <LI> <CODE>@return</CODE> description of return value
+  <LI> <CODE>@exception</CODE> <EM>exceptionName</EM> description 
+  <LI> <CODE>@see</CODE>  <EM>string</EM>
+  <LI> <CODE>@see</CODE>  <EM>URL</EM>
+  <LI> <CODE>@see</CODE>  <EM>classname#methodname</EM>
+</UL>
+
+<P>
+Be as precise as reasonably possible in documenting effects.
+Here are some standard conventions for semi-formal specifications.
+<UL>
+  <LI> Use <CODE>@return condition</CODE> to describe 
+      postconditions and effects
+      true upon return of a method.
+      
+  <LI> Use <CODE>PREV(obj)</CODE>  to refer to the state of an object
+      at the onset of a method.
+      
+  <LI> Use <CODE>OUT(message)</CODE>  to describe messages that are
+      sent to other objects as required aspects of functionality,
+      or referrred to in describing the effects of other methods.
+      And similarly <CODE>IN(message)</CODE> for messages that are received.
+      
+  <LI> Use <CODE>foreach (int i in lo .. hi) predicate</CODE> to
+      means that predicate holds for each value of i.
+      
+      
+  <LI> Use <CODE>foreach (Object x in e) predicate </CODE> to mean 
+      that the predicate holds for each element of a collection
+      or enumeration.
+      
+  <LI> Use <CODE>foreach (Type x) predicate </CODE> to mean 
+      that the predicate holds for each instance of <code>Type</code>.
+      
+  <LI> Use <CODE>--&gt;</CODE> to means `implies'.
+      
+  <LI> Use ``Behaviorally equivalent to <CODE>{ code segment }</CODE>''
+      to document convenience or specialized methods that can be 
+      defined in terms of a few operations using other methods.
+      
+  <li> Use <code>RELY(predicate)</code> to describe assumptions
+      about execution context (for example relying on lack of concurrent
+      execution of other methods).
+</UL>
+
+<P>
+Example:
+
+<PRE>
+  /**
+   * Insert element at front of the sequence
+   *     
+   * @param element the element to add
+   * @return condition:
+   * &lt;PRE&gt;
+   *  size() == PREV(this).size()+1 &&
+   *  at(0).equals(element) &&
+   *  foreach (int i in 1..size()-1) at(i).equals(PREV(this).at(i-1)) 
+   * &lt;/PRE&gt;
+  **/
+
+  public void        addFirst(Object element);
+</PRE>
+
+<h3>
+Internal Comments
+</h3>
+
+
+Use <CODE>/* ... */</CODE> comments to describe algorithmic
+details, notes, and related documentation that spans more than
+a few code statements.
+<P>
+Example:
+
+<PRE>
+    /*
+     * Strategy:
+     *    1. Find the node
+     *    2. Clone it
+     *    3. Ask inserter to add clone 
+     *    4. If successful, delete node
+     */
+</PRE>
+
+Use Running <CODE>//</CODE> comments to clarify non-obvious code.
+But don't bother adding such comments to obvious code;
+instead try to make code obvious!
+<P>
+Example:
+
+<PRE>
+int index = -1; // -1 serves as flag meaning the index isn't valid
+</PRE>
+
+
+<h2>
+Naming Conventions for Identifiers
+</h2>
+
+<dl>
+  <dt> packages: 
+  <dd> <CODE>lowercase</CODE>
+  <dt> classes: 
+  <dd> <CODE>CapitalizedWithInternalWordsAlsoCapitalized</CODE>
+  <dt> methods: 
+  <dd> <CODE>firstWordLowerCaseButInternalWordsCapitalized</CODE>
+  <dt> constants (finals): 
+  <dd> <CODE>UPPER_CASE_WITH_UNDERSCORES</CODE>
+  <dt> private or protected: 
+  <dd> <CODE>trailingUnderscore_</CODE>
+      (Yes, this is ugly. It is good that it is ugly!)
+  <dt> static private or protected: 
+  <dd> <CODE>twoTrailingUnderscores__</CODE>
+  <dt> method local variables: 
+  <dd> <CODE>lower_case_with_underscores</CODE>
+  <dt> factory method for objects of type X: 
+  <dd> <CODE>newX</CODE>
+  <dt> converter method that returns objects of type X:
+  <dd> <CODE>toX</CODE>
+  <dt> method that reports an attribute x of type X: 
+  <dd> <CODE>X x()</CODE> or <code>X getX()</code>.
+  <dt> method that changes an attribute x of type X: 
+  <dd> <CODE>void x(X value)</CODE> or <code>void setX(X value)</code>.
+  <dt> Exception class: 
+  <dd> <CODE>ClassNameEndsWithException</CODE>.
+  <dt> Interface. When necessary to distinguish from similarly
+      named classes: 
+  <dd> <CODE> InterfaceNameEndsWithIfc</CODE>.
+  <dt> Class.  When necessary to distinguish from similarly
+      named interfaces: 
+  <dd> <CODE>ClassNameEndsWithImpl</CODE> or
+      <CODE>ClassNameEndsWithObject</CODE> 
+</dl>
+
+<h2>
+Some Coding Guidelines
+</h2>
+
+
+Here are some rules of thumb that tend to avoid common errors and
+development obstacles:
+
+
+<dl>
+
+      
+  <dt> Never declare instance variables as public.
+  <dd> Rationale: The standard OO reasons. Making variables public gives
+      up control over internal class structure. Also, methods cannot
+      assume that variables have valid values.
+<p>
+
+  <dt> Avoid unnecessary instance variable access and update methods.
+      Write <code>get/set</code>-style methods only when they are
+      intrinsic aspects of functionality.
+  <dd> Rationale:
+      Most instance variables in most classes must maintain values
+      that are dependent on those of other instance
+      variables. Allowing them to be read or written in isolation
+      makes it harder to ensure that consistent sets of values are
+      always used.
+<p>
+
+
+  <dt> Use comment conventions to indicate whether instance variables
+      that never have their values
+      changed after construction are intended to be constant (immutable)
+      for the lifetime of the object (versus those that just so
+      happen not to get assigned in a class, but could in a subclass).
+  <dd> Rationale:
+      Access to immutable instance variables generally does not
+      require any synchronization control, but others generally do.
+<p>
+      
+  <dt> Minimize statics (except for static final constants).
+  <dd> Rationale: Static variables act like globals in non-OO languages.
+      They make methods more context-dependent, hide possible
+      side-effects, sometimes present synchronized access
+      problems. and are the source of fragile, non-extensible
+      constructions. Also, neither static variables nor methods are
+      overridable in any useful sense in subclasses.
+<p>
+
+  <dt> Generally prefer <CODE>long</CODE> to <CODE>int</CODE>,
+      and <code>double</code> to <code>float</code>.  But use
+      <CODE>int</CODE> for compatibility with standard Java constructs
+      and classes (for the major example, array indexing, and all of
+      the things this implies, for example about maximum sizes of
+      arrays, etc).
+  <dd> Rationale:
+      Arithmetic overflow and underflow can be 4 billion times less
+      likely with longs than <code>ints</code>; similarly, fewer
+      precision problems occur with <code>doubles</code> than
+      <code>floats</code>.  On the other hand, because of limitations
+      in Java atomicity guarantees, use of longs and doubles must be
+      synchronized in cases where use of ints and floats sometimes
+      would not be.
+<p>
+
+
+  <dt> Generally prefer <code>protected</code> to <code>private</code>.
+  <dd> Rationale: Unless you have good reason for sealing-in a particular
+      strategy for using a variable or method, you might as well plan
+      for change via subclassing. On the other hand, this almost
+      always entails more work. Basing other code in a base class
+      around <code>protected</code> variables and methods is harder,
+      since you you have to either loosen or check assumptions about
+      their properties. (Note that in Java, <code>protected</code>
+      methods are also accessible from unrelated
+      classes in the same package. There is hardly every any reason to
+      exploit this though.)
+      
+      <p>
+      
+  <dt> Minimize direct internal access to instance variables inside methods.
+      Use <code>protected</code> access and update methods instead (or
+      sometimes <code>public</code> ones if they exist anyway).
+  <dd> Rationale: While inconvenient and sometimes overkill, this allows
+      you to vary synchronization and notification policies associated
+      with variable access and change in the class and/or its
+      subclasses, which is otherwise a serious impediment to
+      extensiblity in concurrent OO programming.  (Note: The
+      underscore convention for instance variables serves as an
+      annoying reminder of such issues.)  <p>
+      
+  <dt> Avoid overloading methods on argument type. (Overriding on
+      arity is OK, as in having a one-argument version versus a two-argument
+      version). If you need to specialize behavior according
+      to the class of an argument, consider instead choosing
+      a general type for the
+      nominal argument type (often <code>Object</code>) and using
+      conditionals checking <code>instanceof</code>. Alternatives
+      include techniques such as double-dispatching, or often best,
+      reformulating methods (and/or those of their arguments)
+      to remove dependence on exact argument type.
+  <dd> Rationale: Java method resolution is static; based on
+      the listed types, not the actual types of argument. This is
+      compounded in the case of non-Object types with coercion
+      charts. In both cases, most programmers have not committed the
+      matching rules to memory. The results can be counterintuitive;
+      thus the source of subtle errors.  For example, try to predict
+      the output of this. Then compile and run.
+
+<pre>
+class Classifier {
+  String identify(Object x)  { return "object"; }
+  String identify(Integer x) { return "integer"; }
+}
+
+class Relay {
+  String relay(Object obj) { return (new Classifier()).identify(obj); }
+}
+
+public class App {
+  public static void main(String[] args) {
+    Relay relayer = new Relay();
+    Integer i = new Integer(17);
+    System.out.println(relayer.relay(i));
+  }
+}
+</pre>    
+
+    <p>
+
+  <dt> Write methods that only do ``one thing''. In particular,
+      separate out methods that change object state from those that
+      just rely upon it. For a classic example in a
+      <code>Stack</code>, prefer having two methods <code>Object
+      top()</code> and <code>void removeTop()</code> versus the single
+      method <code>Object pop()</code> that does both.
+  <dd> Rationale:
+      This simplifies (sometimes, makes even possible) concurrency
+      control and subclass-based extensions.  <p>
+      
+  <dt> Define return types as <CODE>void</CODE>  unless they return 
+      results that are not (easily) accessible otherwise. (i.e.,
+      hardly ever write <CODE>return this</CODE>).
+  <dd> Rationale: While convenient, the resulting method cascades
+      (<code>a.meth1().meth2().meth3()</code>) can be the sources of
+      synchronization problems and other failed expectations about the
+      states of target objects.  <p>
+      
+  <dt> Declare all public methods as synchronized; or if not,  describe the 
+      assumed invocation context and/or rationale for lack of
+      synchronization.
+  <dd> Rationale: In the absence of planning out a set of concurrency
+      control policies, declaring methods as synchronized at least
+      guarantees safety (although not necessarily liveness) in
+      concurrent contexts (<em>every</em> Java program is concurrent
+      to at least some minimal extent). With full synchronization of
+      all methods, the methods may lock up, but the object can never
+      enter in randomly inconsistent states (and thus engage in
+      stupidly or even dangerously wrong behaviors) due to concurrency
+      conflicts.  If you are worried about efficiency problems due to
+      synchronization, learn enough about concurrent OO programming to
+      plan out more efficient and/or less deadlock-prone policies.
+<p>
+
+  <dt> If you override Object.equals, also override Object.hashCode,
+     and vice-versa.
+
+  <dd> Rationale: Essentially all containers and other utilities that
+      group or compare objects in ways depending on equality rely on
+      hashcodes to indicate possible equality.  <p>
+      
+  <dt> Don't invoke <CODE>clone()</CODE> unless you know 
+      what its implementation does (e.g., shallow vs deep copying).
+      Conversely, if you think that clone() may be called in a class
+      you write, then explicitly define it.
+      
+  <dd> Rationale: As of Java 1.0, such considerations are nearly
+      enforced automatically, via the <code>Cloneable</code> interface
+      and its conventions.
+<p>
+
+  <dt> Always embed <code>wait</code> statements in <code>while</code>
+      loops that re-wait if the condition being waited for does not
+      hold.
+  <dd> Rationale: When a <code>wait</code> wakes up, it does not know
+      if the condition it is waiting for is true or not.  <p>
+      
+  <dt> Use <code>notifyAll</code> instead of <code>notify</code> or
+      <code>resume</code>.
+  <dd> Rationale:
+      Classes that use only <code>notify</code> can normally only
+      support at most one kind of wait condition across all methods in
+      the class and all possible subclasses. And unguarded
+      <code>suspends/resumes</code> are even more fragile.  <p>
+      
+  <dt> Whenever reasonable, define a default (no-argument) constructor
+      so objects can be created via Class.newInstance().
+  <dd> Rationale: This allows classes of types unknown at compile
+      time to be dynamically loaded and instantiated (as is done for
+      example when loading unknown Applets from html pages).  <p>
+      
+  <dt> Declare a class as final only if it is a subclass or
+      implementation of a class or interface declaring all of its
+      non-implementation-specific methods. (And similarly for
+      final methods).
+      
+  <dd> Rationale: Making a class final means that no one ever has a chance to
+      reimplement functionality. Defining it instead to be a subclass
+      of a base that is not final means that someone at least gets a
+      chance to subclass the base with an alternate implementation.
+      Which will essentially always happen in the long run.  <p>
+      
+  <dt> If you can conceive of someone else implementing a class's
+      functionality differently, define an interface, not an abstract
+      class. Generally, use abstract classes only when they are
+      ``partially abstract''; i.e., they implement some functionality
+      that must be shared across all subclasses.
+      
+  <dd> Rationale:
+      Interfaces are more flexible than abstract classes. They support
+      multiple inheritance and can be used as `mixins' in otherwise
+      unrelated classes.  <p>
+      
+  <dt> Prefer <code>abstract</code> methods in base classes to those
+      with default no-op implementations. (Also, if there is a common
+      default implementation, consider instead writing it as a
+      <code>protected</code> method so that subclass authors can just
+      write a one-line implementation to call the default.)
+  <dd> Rationale: The Java compiler will force subclass authors to
+      implement <code>abstract</code> methods, avoiding problems
+      occurring when they forget to do so but should have.
+      
+      <p>
+      
+  <dt> Minimize <CODE>*</CODE> forms of <CODE>import</CODE>. Be precise
+      about what you are importing. 
+      
+  <dd> Rationale:
+      Otherwise readers of your code will have a hard time understanding
+      its context and dependencies. Some people even prefer not
+      using <code>import</code> at all (thus requiring that every
+      class reference be fully dot-qualified), which avoids all possible
+      ambiguity at the expense of requiring more source code changes if package
+      names change.
+      <p>
+      
+  <dt> Do not require 100% conformance to rules of thumb such as
+      the ones listed here!
+  <dd> Rationale: Java allows you program in ways that do not
+      conform to these rules for good reason. Sometimes 
+      they provide the only reasonable ways to implement things.
+      And some of these rules make programs less efficient than they
+      might otherwise be, so are meant to be concientiously broken
+      when performance is an issue.
+      Style guidelines such as this are often usefully viewed as
+      checklists for retrospective code clean-up when classes
+      need to be used in new contexts or placed in reusable libraries.
+      <p>
+      
+</dl>
+    
+<hr>
+<address><A HREF="http://g.oswego.edu/dl">Doug Lea</A></address>
+<!-- hhmts start -->
+Last modified: Tue Jun  4 07:25:47 EDT 1996
+<!-- hhmts end -->
+</body> </html>
+

@@ -1,0 +1,110 @@
+
+My original premise for an RTF->RTF translator was that it would be 
+"minimally intrusive".  Meaning that it would simply find Ethiopic RTF in 
+one system and replace it with Ethiopic RTF in another system 
+(system = font vendor) and not touch anything else.  This would be a safe
+approach and code capable of this task should work with simple (wordpad) or
+complex (excell, msword) RTF files.
+
+The code does this, more or less, but I want to make it more "open" and
+flexible for working with other-than RTF output.  Such as UTF-8 HTML files
+or LaTeX, SERA, etc.  I think with forsight the code could be written such
+that a person wishing to add a new system could simply write a new .c module
+(or a .java object), add the function name into a .h file and the driver
+code becomes aware of the new output option at compile time (how, I have
+no idea).  A configuration script could make output returns optional.
+
+==========================================================================
+
+#define STAGE_RIGHT 0   // ;-)
+#define HEADER      1
+#define LATIN       2
+#define ETHIOPIC    3
+
+
+main (argc, argv)
+{
+FILE* inFile  = stdin;
+FILE* outFile = stdout;
+FontStruct* fontlist;
+gezOutFunction* gezOut;
+char* header;
+
+
+  //  read command line options, do setup
+  //  inFile, outFile, and gezOut are set up
+
+  //  parse_header has the job to extract the RTF header and
+  //  find known ethiopic font names and tag their \fx numbers
+  header = parse_header (fontList, inptr);
+
+
+  //  gezOut is an external, optionally compiled module that
+  //  will translate RTF components into a target system
+  //  -which might also be RTF.  For SERA, JIS, UTF-X, TeX, outputs
+  //  the "header" would simply be thrown away by the translator.
+  gezOut (fontList, outFile, header, HEADER);
+
+
+  //  scan_rtf will read until the end of "inFile" identifying blocks
+  //  of text as either English or Ethiopic (based on the "fontList" ids)
+  //  and passing said blocks to gezOut for interpretation.
+  scan_rtf (gezOut, fontList, inFile, outFile);
+
+
+  exit (STAGE_RIGHT);   // I'm just so damned witty...
+
+}
+
+
+//  At issue during the scanning is that RTF escapes corresponding to
+//  characters, e.g. \ldblquote = 0x93, can be translated to hex at
+//  scan time or the gezOut routines can do this on their own.  For
+//  which the gezOut routines have access to a translator routine.
+//  They also have access to a routine to translate hex into char escapes.
+//  Other escapes (not for characters) are ignored.
+
+scan_rtf (gezOut, fontList, inFile, outFile)
+{
+
+  //  read, read, read... find english, blocks, or ethiopic blocks...
+
+  if (fontNow == Ethiopic)
+    gezOut (blockOfText, ETHIOPIC);
+  else
+    gezOut (blockOfText, LATIN);
+
+}
+
+==========================================================================
+
+The Role Of LibEth
+------------------
+
+LibEth is able to take strings of ANSI text for systems like "Washra",
+"Feedel", "ALXEthiopian", and a few more and normalize it into Unicode.
+Libeth can then accept a Unicode string and return any variety of output
+systems.  A synopsis of RTF->RTF between systems;
+
+
+  RTF->ANSI->LIBETH->UNICODE->         // vendor A in...
+     ->UNICODE->LIBETH->ANSI->RTF      // vendor B out...
+
+What I was proposing above would be a flow like:
+
+  RTF->gezOut
+       gezOut->ANSI->LIBETH->UNICODE->
+             ->UNICODE->gezOutSystem
+
+Where the use of libeth and an rtf->ansi routine is of course optional.
+
+Or, the RTF->ANSI could be preprocessed before sending to gezOut:
+
+  RTF->ANSI->gezOut
+             gezOut->LIBETH->UNICODE->
+                   ->UNICODE->gezOutSystem
+
+
+A policy issue, the work here is really developing an API for gezOut routines
+for this application.  For which I have no experience.  A later stage for
+the code is to accept other-than RTF input (such as SERA, unicode, utf-7,8).

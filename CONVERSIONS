@@ -1,0 +1,275 @@
+
+FONTS & FORMATS
+===============
+
+There are a large variety of fonts and document languages residing in the
+computer world these days.  This is particularly true of the Ge'ez fonts
+on the market today where each font provider has used a different encoding
+system.  This means that reading (se)(la)(m) with one font may turn into
+meaningly garble with another Ge'ez font -just as unintelligible as if you
+had tried viewing with a Roman (aka English) font.
+
+This is where Ge'ezXfer comes in, to decipher the garble and allow you to
+read a "Ge'ezigna" document when you have "Washra" fonts on your computer.
+This document will explain the conversion possibilities available with 
+Ge'ezXfer.
+
+
+First some terminologies we will use.  
+<
+  Say something brief about the distinction between character code and
+  document sysetms
+>
+
+RTF stands for "Rich Text Format" it is a document system used mainly on
+personal computers.  RTF has the ability to save fancy text formatting and 
+graphics and TrueType Ethiopic fonts.  TrueType fonts that Ge'ezXfer knows
+about are:
+
+
+"Agafari" which refers to one of the four fonts of the Ethiopian Science and
+  Technology Commision: AGF - Ejji Tsihuf, AGF - Rejim, AGF - Yigezu Bisrat,
+  and AGF - Zemen.
+
+"ALX Ethiopian" "Ge'ezEdit", and "Ge'ezFree" correspond directly to their
+  font names.
+
+"Feedel" refers to the "Ge'ezigna" font of Feedel Software.
+
+"Washra" which refers to any of the EthiO Systems fonts using Ethiopian ASCII,
+  supported fonts are "Washra", "YebSe", and "Ethiopia".
+
+
+Plain text (aka "DOS Text" or "ASCII Text") does not use a special language to
+preserve special features like graphics or underlines, and font sizes.  Only
+the most simple text formatting is possible such as tabbing and returns.
+
+JIS and JUNET are plain text format systems using the Unicode specification for
+Ethiopic script.  Both are text systems used on computers and networks primarily
+for the encoding of Japanese text.  Both use the Unicode character sequence for
+Ethiopic but not with the same character addresses.  "jis" and "jun" are 
+abbreviations we will use later.
+
+UNI and UTF-8 are both Unicode sytems.  UNI is "raw" 2-byte Unicode. UTF-8 
+is the more common but uses a 3-byte encoding of the Ethiopic Unicode
+definition where decoded addresses do correspond directly to the Unicode system.
+"uni" and "utf8" will be our abbreviations.
+
+SERA is a transliteration system for Ethiopic script that is independent of
+character code and document systems. SERA is used mainly with plain text and
+sometimes HTML documents.
+
+ISO/TC46/SC2 and IES are other transliteration systems available.
+ISO/TC46/SC2 is a developing standard that translates Ethiopic into a single
+case Latin system.  IES is the system used by the Institute of Ethiopian
+Studies, it also requires that TeX or LaTeX be used as the output document
+type.  "iso" and "ies" are abbreviations we will use later.
+
+TeX and LaTeX are high quality print formatting systems.  They are again
+document systems, only EthiO Systems has to date developed Ethiopic "Metafonts"
+for TeX and LaTeX.  "etmf" is an abbreviation we will use later.
+
+HTML is an Internet standard for publishing Hyper Text documents, generally on
+the World Wide Web.  HTML has a way to work with TrueType fonts as well as the
+JIS, UTF-8, and SERA systems.
+
+
+
+Other Fonts & Formats?
+---------------------
+We would like to add them!  Font and document systems that are unsupported
+at this time are probably due to lack of information about the system.  If
+you are a font vendor and would like your font supported, please contact us
+about doing so.
+
+
+
+
+RTF -> RTF
+===========
+
+In  :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+Out :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+
+Most popular software used for word processing, spreadsheets, and databases
+provide a "Save As... ...RTF" option.  With the Rich Text Format document
+system you may import and export between a large variety of software (even
+read databases into spreadsheets and the like) as well as to other computer
+systems (Mac, OS/2, UNIX).  The Windows '95 "WordPad" and Windows 3.x "Write"
+are two simple file editors coming with Windows that are capable of reading
+and saving RTF files.
+
+Given this versatility of RTF it seemed to the developers of Ge'ezXfer to be
+the best system suited for converting between the different Ge'ez font systems.
+
+With this option Ge'ezXfer will search through an RTF file and "find & replace"
+Ge'ez font names and letters with the new font you have selected.  By default,
+when a Windows TrueType font is selected as the new font, the RTF document
+system is used.
+
+Example:  "file.rtf" is an RTF input file that uses a TrueType font.
+
+  gez2 -out washra.rtf  file.rtf > newfile.rtf
+
+or
+
+  gez2 -out washra  file.rtf > newfile.rtf
+        since Washra is a TrueType font it is already assumed to use RTF.
+
+
+
+RTF -> PLAIN TEXT
+==================
+
+In  :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+Out :  { sera, iso, jis, uni, utf8 }
+
+
+The Rich Text Format to Plain Text conversion should be used when converting
+text from a Windows TrueType font system into a 7 or 8 bit text system such
+as SERA (7bit), JIS, or UTF-8 (8 bit systems).
+
+For Fidel systems needing only one font (Agafari, ALX Ethiopian, Feedel, 
+& Ge'ezEdit) the files _could_ be outputed as plain text, however the Windows
+"WordPad" and "Write" are also available for this purpose (RTF->TEXT).  Be
+aware that saving in text files you will loose fancy text and formating such
+as bold and italic fonts or tables and graphics.
+
+
+Example:  "file.rtf" is an RTF input file that uses a TrueType font.
+
+  gez2 -out utf8.txt  file.rtf > newfile.txt
+
+or
+
+  gez2 -out utf8  file.rtf > file.txt
+        since UTF8 is assumed to be a text system.
+
+
+
+RTF -> TEX/LATEX
+=================
+
+In  :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+Out :  { etmf, ies }
+
+With the Rich Text Format to TeX option you may convert a file composed in a
+Windows, Mac, or OS/2 software into the TeX or LaTeX publishing system.  Be
+aware of the limitation that formatting in the RTF file is NOT translated
+into the TeX or LaTeX equivalents.
+
+
+Example:  "file.rtf" is an RTF input file that uses a TrueType font.
+
+  gez2 -out etmf.tex  file.rtf > file.tex
+
+or
+
+  gez2 -out ies.ltx  file.rtf > file.ltx
+       -out ies      file.rtf > file.ltx 
+       -out etmf     file.rtf > file.ltx 
+
+LaTeX (.ltx) is the default document type for the ies and etmf systems.
+
+
+
+PLAIN TEXT -> RTF
+=================
+
+In  :  { sera }
+Out :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+
+With this option you can convert plain text files from SERA into a popular
+Windows font system for viewing and further editing.  UTF-8 and UTF-7 will
+likely be text option coming in the future.
+
+
+
+
+PLAIN TEXT -> PLAIN TEXT
+========================
+
+In  :  { sera }
+Out :  { iso, jis, jun, uni, utf8 }
+
+With this option Ge'ezXfer will convert between plain text systems for Ge'ez.
+In the cases of JIS and UTF-8 
+
+
+
+
+PLAIN TEXT -> HTML
+==================
+
+In  :  { sera }
+Out :  { Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra }
+
+
+With this option you may convert a SERA HTML file into an HTML file using a
+TrueType font.  Ge'ezXfer will properly provide <font face="YYYY"> corrections
+for mulitple font systems.  Adding the initial <font face="XXXX"> HTML tag is
+work left for you.
+
+
+
+
+PLAIN TEXT -> TEX/LATEX 
+=================
+
+In  :  { sera }
+Out :  { etmf, ies }
+
+With this option you may simply convert SERA files in to the TeX or LaTeX
+publishing system.
+
+
+
+
+HTML -> ????
+============
+
+At the moment Ge'ezXfer does NOT offer conversion between different font systems 
+encoded in HTML files.  But will shortly.  If the font system in the HTML file
+uses only one Ge'ez font, you can try your luck now by requesting Ge'ezXfer to
+convert the file as if it were PLAIN TEXT.
+
+
+
+================================================================================
+
+Tables of Character Occurances
+==============================
+
+Ge'ezXfer has an option to print tables of character counts (i.e. the
+number of times (he) is found in a document or (lWa)).  See the manual
+for how to select the tables option.  When tables of character counts
+are printed, you will again have choices for your document and font
+system.  Possibilities are:
+
+
+Table In RTF 
+------------
+ SERA, Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra 
+
+
+
+
+Table In HTML
+-------------
+ SERA, JIS, UTF-8, Agafari, ALX Ethiopian, Feedel, Ge'ezEdit, Ge'ezFree, Washra 
+
+
+
+
+Table In Plain Text
+-------------------
+ SERA, JIS, UTF-8
+
+
+
+
+Table In Plain TeX
+-------------------
+  EthiO Systems Metafont, SERA, <add IES phonetic transcription later>
+
+

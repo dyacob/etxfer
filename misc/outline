@@ -1,0 +1,33 @@
+
+ethXfer
+
+Purpose:  To convert character codes from one Ethiopic system into another.
+
+Will Read In:  
+  SERA, ISO/TC46/SC2 (maybe), Unicode (UCS-7,8,16), Agafari, ALXEthiopian,
+  Dashen, Feedel, ModEth, Monoyype, NCI, Phonetic Systems.  Read in is
+  supported for RTF where applicable.
+
+Will Write Out:
+  All of "Read In" Above, Java, JIS, JUNET, TeX.  These systems will have a
+  low priority for input support as they probably require starting points
+  in a supported system to later be converted to JIS, etc..  Write out is
+  supported for RTF where applicable.
+
+
+Phases of Development
+---------------------
+
+1)  Command line tool for unix systems, concurrent development under Java.
+2)  Read In SERA initially with Write Out in described sytems above.
+3)  Read In of MS Windows Based fonts systems added for ANSI text and RTF.
+4)  GUI Added under X11 (Java version may have this sooner).
+5)  File viewing capability added to X interface.
+   (Java version has this with editor from the beginning)
+6)  LibEth DLL and VB Interface for Windows 3.x users.  This tool uses the
+    GT public domain TT fonts.
+:
+:
+Later additional I/O features and an editing features may be added to the
+X11 and VB versions.
+

@@ -1,0 +1,37 @@
+
+CC = gcc              # use cc if gcc not available
+CFLAGS = -c -g
+STRIP = strip         # delete $(STRIP) line below if unavailable
+PROG =  test
+LIBS = -leth -ll      # it is critical that -leth precedes -ll
+MYLIBDIR = ./lib-src
+MYINCLUDE = ./include
+SOURCE  = test.c rtfUtils.c 
+OBJECTS = $(SOURCE:.c=.o)
+LIBRARY = libeth.a
+#DEPFLAGS = -DSUPPORT_DOS 
+#DEPFLAGS = -DSUPPORT_TEX 
+
+
+
+all: ${PROG} ${PROG2}
+ 
+${PROG}:  $(OBJECTS) $(LIBRARY)
+	    $(CC) -g $(DEPFLAGS) $(OBJECTS) -I$(MYINCLUDE) -L$(MYLIBDIR) $(LIBS) -o ${PROG}
+#		$(STRIP) $(PROG)
+
+
+$(LIBRARY):
+	(cd $(MYLIBDIR); make -f Makefile)
+
+
+.c.o:
+	$(CC) $(CFLAGS) -I$(MYINCLUDE) $*.c
+
+clean:
+	    rm -f $(OBJECTS); cd $(MYLIBDIR); make clean
+
+cleanall:
+	    rm -f $(OBJECTS) $(PROG) $(PROGLINKS); cd $(MYLIBDIR); make clean
+
+

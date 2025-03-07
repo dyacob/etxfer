@@ -1,0 +1,137 @@
+void
+rtf2plain ( Fout, fi, changeList, rtfText, inFile, outFile, isGez, lethFlags, sectionID )
+  enum Fonts Fout;
+  struct FontInfoList* fi;
+  struct FontInfo* (*changeList)[];
+  char* rtfText;
+  FILE* inFile;
+  FILE* outFile;
+  struct FontInfo** isGez;
+  LEthFlags* lethFlags;
+  int sectionID;
+{
+struct FontInfo* newGez; 
+FCHAR* uniString=NULL;
+unsigned char* plainOut=NULL;
+char *outString=NULL, *lastString=NULL, *setNull=NULL;
+char *Begin=NULL, *End=NULL, *lineSegment=NULL, *appendRTF=NULL, *header=NULL, *markBegin=NULL;
+
+
+
+ fprintf (stderr, "In plainOut [%i]! \n", sectionID);
+
+  if (sectionID == HEADER)       /* don't use it... */
+    {
+      return;
+    }
+  else if (sectionID == RTFLINE)
+    {
+      lethFlags->verbatim = true;
+      lethFlags->docOut = plain;
+      newGez = *isGez;
+      setNull = (char *) malloc (1 * sizeof (char));
+      setNull[0] = '\0';
+      appendRTF = lastString = outString = setNull;
+
+      Begin = (char *) malloc ( (strlen(rtfText) + 1) * sizeof(char) );
+      fprintf (stderr, "  After Begin Malloc\n" );
+	  markBegin = Begin;
+      strcpy ( Begin, rtfText );
+      End   = Begin + strlen(Begin);  /* fix this later...*/
+
+      while ( Begin < End )
+        {
+          fprintf (stderr, "  New Cycle Before [%s][%s]\n", lastString, plainOut );
+          lineSegment = parse_line ( changeList, &Begin, &newGez, &appendRTF );
+          fprintf (stderr, "  New Cycle After [%s][%s]\n", lastString, plainOut );
+          if ( (*isGez)->setId == Froman )                 /* translate for gez font */
+            {
+
+              fprintf (stderr, "  isGez == Froman [%i]\n", (*isGez)->setId );
+              fprintf (stderr, "  outString = [%i : %s]\n", strlen(outString), outString);
+              fprintf (stderr, "  lineSegment = [%i : %s]\n", strlen(lineSegment), lineSegment);
+
+              fprintf (stderr, "  Before Malloc\n" );
+              strip_rtf ( &lineSegment );
+              outString = (char *) malloc (
+                           ( strlen(lastString)   /* last size           */
+                           + strlen(lineSegment)  /* size increment      */
+                           + 1 )                  /* to store a \0       */
+                           * sizeof(char) );
+              fprintf (stderr, "  After Malloc\n" );
+
+              strcpy ( outString, lastString );   /* copy old            */
+              strcat ( outString, lineSegment );  /* cat new             */
+
+            }
+          else    /* isGez != Froman */
+            {   
+              fprintf (stderr, "  isGez != Froman [%i]\n", (*isGez)->setId );
+              fprintf (stderr, "  lineSegment = [%s]\n", lineSegment );
+
+              fprintf (stderr, "  Before sget_fstring\n" );
+              sget_fstring ( &uniString, lineSegment, lethFlags ); 
+              fprintf (stderr, "  After sget_fstring\n" );
+              fprintf (stderr, "  Before fidel_sputs\n" );
+              fidel_sputs ( uniString, &plainOut, lethFlags );
+              fprintf (stderr, "  After fidel_sputs\n" );
+
+              fprintf (stderr, "  Before Malloc\n" );
+              outString = (char *) malloc ( 
+                           ( strlen(lastString)   /* last size           */
+                           + strlen(plainOut)       /* ethiopic increase   */
+                           + strlen(appendRTF)    /* unknown RTF escapes */
+                           + 1 )                  /* to store a \0       */
+                           * sizeof(char) );
+              fprintf (stderr, "  After Malloc\n" );
+
+              fprintf (stderr, "  Catting [%s][%s]\n", lastString, plainOut );
+              strcpy ( outString, lastString );   /* copy old  */
+              strcat ( outString, plainOut     );   /* cat new   */
+/*            strcat ( outString, appendRTF );    /* cat extra */
+
+              fprintf (stderr, "  Before Append Free\n" );
+              if ( appendRTF != setNull )
+                {
+                  free ( (char *)appendRTF  );
+                  appendRTF = setNull;
+                }
+              fprintf (stderr, "  After Append Free\n" );
+
+              free ( (FCHAR *)uniString );
+              free ( (unsigned char *)plainOut );
+
+            }    /* isGez != Froman */
+
+          fprintf (stderr, "  Freeing Last Line & Line Segment\n" );
+          if ( lastString != setNull )            /* first cycle check */
+            free ( (char *)lastString );
+          free ( (char *)lineSegment );
+          lastString = outString;                 /* old points to new */
+          *isGez = newGez;
+
+        }  /*  end while ( Begin < End )  */
+
+     /*   need to filter "unknown" RTF escapes 
+      *   i.e. ones we can not convert back into chars 
+      */ 
+
+      fprintf (stderr, "  Freeing Mark Begin\n" );
+      free ( (char *)markBegin );
+      free ( (char *)setNull );
+    }
+  else  /*  I don't know what we're dealing with...  */
+    {
+      fprintf (stderr, "Can Not Process RTF Body Section : %s", rtfText); 
+      exit (1);
+    }
+
+
+  fprintf (stderr, "\noutstring = [%s]\n", outString);
+  fprintf (outFile, "%s", outString);
+  free ( (char *)outString );
+  fprintf (stderr, "Leave plainOut!\n\n");
+
+  return;
+   
+}
